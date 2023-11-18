@@ -1,309 +1,179 @@
-#include<iostream>
-using namespace std;
-class Person 
+#include"Founder.h"
+#include<string>
+
+Founder::Founder(int m,int n) 
 {
-    protected:
-        string name,gender,nationality;//ten,gioi tinh,quoc tich;
-        int age;
-    public:
-       Person()
+    this->m = m;
+    this->n = n;
+    persons = new Person[m];
+    projects = new Project[n];
+}
+
+Founder::~Founder()
+{
+    delete[] persons;
+    delete[] projects;
+}
+
+
+void Founder::Input()
+{
+    //cout << "Founder's_Name:" ;
+    //cin >> fname;
+    cout << "---Nhap thong tin thanh vien :" << endl;
+    for (int i = 0; i < m; i++)
     {
-       this-> name = "";
-       this-> gender = "";
-       this-> nationality = ""; 
-       this-> age = 0;
+        cout << "+ Thanh vien thu " << i + 1 << ":" << endl;
+        persons[i].Input();
     }
-    Person(string name,string gender,int age,string nationality)
+    cout << "---Nhap thong tin du an :" << endl;
+    for (int i = 0; i < n; i++)
     {
-       this-> name = name;
-       this-> gender = gender;
-       this-> nationality = nationality; 
-       this-> age = age;
-    }
-    ~Person()
-    {}
-     void Input()
-        {
-            cout << "Name:";
-            cin >> name;
-            cout << "Gender:";
-            cin >> gender;
-            cout << "Age:";
-            cin >> age;
-
+        cout << "+ Du an thu " << i + 1 << ":" << endl;
+        projects[i].Input();
+    }//phan nay khong can thiet
+      tempData << "Thong tin cac thanh vien :" << endl;
+        for (int i = 0; i < m; i++) {
+            tempData << "Thong tin thanh vien thu" << i + 1 << ":" << endl;
+            tempData << persons[i].GetInfo() << endl;
         }
-        void Output()
-        {
-            cout<< "Name:" << name << endl;
-            cout<< "Gender:" << gender << endl;
-            cout<< "Age:" << age << endl;
-
-        }
-};
-class Investors : Person
-{
-    protected:
-        string job;//nghe nghiep
-        string investment_strategy;//Chien luoc dau tu.
-        int money;//nguon von tinh theo usd
-        
-    public:
-        Investors(): Person()
-        {
-            this->job = "";
-            this->investment_strategy = "";
-            this->money = 0;
-
-        }
-        Investors(string name,string gender ,int age,string nationality,string job,string investment_strategy,int money)
-            : Person(name,gender,age,nationality)
-        {
-            this->job = job;
-            this->investment_strategy = investment_strategy;
-            this->money = money;
-
-        }
-       ~Investors()
-       {
-
-       }
-        void Input()
-        {
-            Person :: Input();
-            cout << "Nhap nghiep cua ban: ";
-            cin >> this->job;
-            cout<< "Nhap so von dau tư cua ban(USD):" ;
-            cin >> money;
-            cout << "Nhap chien luoc dau tu cua ban:" ;
-            cin>> investment_strategy;
-
-        }
-        void Output()
-        {   cout << "Thong tin nha dau tu:"<< endl;
-            Person :: Output();
-            cout << "Job: " << job <<endl;
-            cout << "Money: " << money <<endl;
-            cout << "chien luoc dau tu: " << investment_strategy << endl;
-        }
-
-};
-class ConsumerMarket 
-{
-    protected:
-        string name;//Tên của thị trường tiêu dùng.
-        string location;//vi tri truong tieu dung
-        int size;// kich thuoc cua truong tieu dung.
-        double revenue;//doanh thu.
-        double growth_rate;//toc do tang truong
-        double market_share;// ty le thi phan cua truong tieu dung.
-        string customer_demographics;// thong tin ve doi tuong khach hang
-        string product_line;//cac san pham ban ra tren thi truong.
-        string goal;//muc tieu
-    public:
-        ConsumerMarket()
-        {
-            this->name = "";
-            this->location = "";
-            this->size = 0;
-            this->revenue = 0.0;
-            this->growth_rate = 0.0;
-            this->market_share = 0.0;
-            this->customer_demographics;
-            this->product_line = "" ;
-            this->goal = "";
-        }
-        ConsumerMarket(string n, string l, int s, double r, double gr, double m, string cd, string pl, string g) {
-            this-> name = n;
-            this->location = l;
-            this->size = s;
-            this->revenue = r;
-            this->growth_rate = gr;
-            this->market_share = m;
-            this->customer_demographics = cd;
-            this->product_line = pl;
-            this->goal = g;
+        tempData << "Thong tin du an :" << endl;
+        for (int i = 0; i < n; i++) {
+            tempData << "Thong tin du an thu" << i + 1 << ":" << endl;
+            tempData << projects[i].GetInfo() << endl;
+        }//
+}
+void Founder:: SaveToFile() {
+        ofstream file("Data.txt", ios::app); 
+        if (file.is_open()) {
             
-        }
-        void Input()
-        {
-            cout <<"nhap ten truong tieu dung: ";
-            cin >> name;
-            cout << "nhap vi tri truong tieu dung: ";
-            cin >> location;
-            cout << "nhap kich thuoc cua truong tieu dung: ";
-            cin >> size;
-            cout << "nhap toc do tang truong: " << endl;
-            //....
-            cout << "muc tieu" << endl;
-            cin >> goal;
-        }
-        void Output()
-        {
-            cout << "Name: " << name << endl;
-            cout << "Location: " << location << endl;
-            cout << "Size: " << size << endl;
-            cout << "Revenue: " << revenue << endl;
-            cout << "Growth rate: " << growth_rate << endl;
-            cout << "Market share: " << market_share << endl;
-            cout << "Customer demographics: " << customer_demographics << endl;
-            cout << "Product line: " << product_line << endl;
-            cout << "Goal: " << goal << endl;
-        }
-};
-class Project : ConsumerMarket
-{
-    protected:
-        string project_name;
-        float investment_capital;//von dau tu.
-        float chi_phi;
-        string rick;//rui ro
-        string goal;//mục tieu
-        float turnover;//doanh thu
-        //danh sach doi thu,phan phoi tai nguyen,hop dong ,...v.v
+            file << tempData.str();
 
-    public:
-        Project():ConsumerMarket()
-        {
-            this->project_name = "";
-            this->investment_capital = 0.0;
-            this->chi_phi = 0.0;
-            this->rick = "";
-            this->goal = "";
-            this->turnover = 0.0;
+            file.close(); 
+        } else {
+            cout << "Không thể mở tệp để ghi!" << endl;
         }
-        ~Project()
-        {}
-        void Input()
-        {
-            cout << "Project name:";
-            cin >> this->project_name;
-            cout << "Investment capital:";
-            cin >> this->investment_capital;
-            cout << "Chi phi thi cong: ";
-            cin >> this->chi_phi;
-            ConsumerMarket::Input();
-            cout << "Rui ro nha dau tu co the gap phai: ";
-            cin >> this->rick;
-            cout <<"muc tieu cua du an: ";
-            cin >> this->goal;
-            cout <<" Doanh thu :";
-            cin >> this->turnover;
-        }
-        void Output()
-        {   
-            cout << "Project name:" << this->project_name << endl;
-            cout << "Investment capital:" << this->investment_capital << endl;
-            cout << "Chi phi thi cong: " << this->chi_phi << endl;
-            ConsumerMarket::Output();
-            cout << "Rui ro nha dau tu co the gap phai: " << this->rick << endl;
-            cout <<"muc tieu cua du an: " << this->goal << endl;
-            cout << "Doanh thu :" << this->turnover << endl; 
-        }
-
-};
-/*class Founder : Person,Project
-{
-    protected:
-        string company_name;//ten cong ty
-        string field;//linh vuc
-        float source_of_capital//nguon von kinh doanh
-        vector<Person> p1;//danh sach thanh vien
-        vector<project> p2;//danh sach du an
-    public:
-        Founder()
-        {}
-        ~Founder()
-        {
-
-        }
-        void Input()
-        {
-
-        }
-        voi Output()
-        {
-
-        }
-        voi Profit()
-
-
-};
-class megreShort// sap xep du an theo so tien can dau tu,theo von dau tu cua project,theo doanh thu;theo von dau tu cua Founder,Investors
-void Merge(int arr[],int l,int m,int r)
-
-{   int i,j;
-    int n1 = m - l +1;
-    int n2 = r-m;
-    int L[n1];
-    int R[n2];
-
-    for( int i = 0; i < n1; i++  )
-    {
-        L[i] = arr[l+i];
-    }
-    for (int j = 0; j < n2; j++)
-    {
-        R[j] = arr[m+1+j];
-    }
-    i=0;
-    j=0;
-    int k=l;
-    while( i < n1 && j < n2)
-    {
-        if ( L[i]<R[j]){
-            arr[k] = L[i];
-            i++;
-
-        }
-        else
-        {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
     }
     
-    while (i < n1)
-    {
-        arr[k] = L[i];
-        i++;
-        k++;
+
+
+/*void Founder::SaveToFile() {
+    ofstream file("Data.txt",ios_base::app); 
+    if (file.is_open()) {
+        file << "Thong tin cac thanh vien :" << endl;
+        for (int i = 0; i < m; i++) {
+            file << "Thong tin thanh vien thu " << i + 1 << ":" << endl;
+            file << persons[i].GetInfo() << endl;
+        }
+
+        file << "Thong tin du an :" << endl;
+        for (int i = 0; i < n; i++) {
+            file << "Thong tin du an thu " << i + 1 << ":" << endl;
+             file << projects[i].GetInfo() << endl; 
+        }
+
+        file.close(); 
+    } else {
+        cout << "Khong the mo file de ghi!" << endl;
     }
-  
-    // Copy các phần tử còn lại của mảng R vào arr nếu có 
-    while (j < n2)
+}*/
+/*void Founder::Sapxep()
+{
+    for (int i = 0; i < n - 1; i++)
     {
-        arr[k] = R[j];
-        j++;
-        k++;
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (projects[j].getMoney() < projects[j + 1].getMoney())
+            {
+                // Swap
+                Project temp = projects[j];
+                projects[j] = projects[j + 1];
+                projects[j + 1] = temp;
+            }
+        }
+    }
+}*/
+//void Founder::Inputsearch()
+//{
+//cout << "nhap thong tin tim kiem: " << endl;
+  //  getline(cin,search);
+//}
+
+
+
+/*bool Founder::searchProject(const string& search) const 
+{     
+    for (int i = 0; i < n; i++)
+    {
+        if (projects[i].getName().find(search) != string::npos)
+        {
+            return true;
+        }
+    }
+    return false;
+}*/
+
+void Founder::showProject(const string& search) const 
+{
+    bool found = false;
+    //cout << "nhap thong tin tim kiem: " << endl;
+    //getline(cin,search);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (projects[i].getName().find(search) != string::npos)
+        {
+            projects[i].Output();
+            found = true;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "Khong tim thay du an nao khop voi tu khoa: " << search << endl;
     }
 }
 
-void Show(int arr[],int size)
-{
-    for (int k =0; k < size; k++)
+void Founder::Output()
+{   cout <<"___________________________________________"<<endl;
+    cout << "Thong tin cac thanh vien (Person):" << endl;
+    for (int i = 0; i < m; i++)
     {
-        cout<<arr[k]<<"  ";
+        cout << "Thong tin thanh vien thu:" << i + 1 << ":" << endl;
+        persons[i].Output();
     }
-    cout<< endl;
+
+    cout << "Thong tin du an (Project):" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Thong tin du an thu: " << i + 1 << ":" << endl;
+        projects[i].Output();
+    }
+
+   /* cout << "Danh sach du an sau khi sap xep theo money:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Du an: " << projects[i].getName() << ", Money: " << projects[i].getMoney() << endl;
+    }*/
 }
 
-void MergeShort(int arr[],int l, int r)
+
+
+
+/*int main()
 {
-   if (l<r)
-    {
-        int m = (l+r)/2;
-        MergeShort(arr,l,m);
-        MergeShort(arr,m+1,r);
-        Merge(arr,l,m,r);
-    }
-}
-*/
-int main()
-{
-    Project p;
-    p.Input();
-    p.Output();
+    int m, n;
+    cout << "sl thanh vien (m): ";
+    cin >> m;
+    cout << "so luong du an (n): ";
+    cin >> n;
+    string search;
+    cin >> search;
+
+    Founder founder(m, n);
+    founder.Input();
+    Founder.showProject(search);
+   
+
     return 0;
-
-}
+}*/
