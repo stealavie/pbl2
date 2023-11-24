@@ -7,8 +7,9 @@ Window* Window::mainWindow=new MainWindow;
 Window* Window::loginWindow=new LoginWindow;
 Window* Window::currentWindow= mainWindow; 
 Window* Window::projectWindow=new ProjectWindow;
-// TTF_Font* Window::font=TTF_OpenFont("font/SourceCodePro-Bold.ttf",16);
-SDL_Color Window::color={255,0,0};
+TTF_Font* Window::font=TTF_OpenFont("font/SourceCodePro-Bold.ttf",16);
+SDL_Color Window::color={0,0,0};
+
 
 Window::Window()
 {
@@ -100,8 +101,8 @@ LoginWindow::LoginWindow()
     Username=new Button(200,580,200,50,"Image/Username.png",renderer);
     Password=new Button(200,630,200,50,"Image/Password.png",renderer);
     Login=new Button(220,690,100,50,"Image/Login_button.png",renderer);
-    // Username_input=new TextInput(renderer,"font/SourceCodePro-Bold.ttf",16,color,410,580);
-    // Password_input=new TextInput(renderer,"font/SourceCodePro-Bold.ttf",16,color,410,580);
+    Username_input = new Text_input(410, 580, 100, 50, color, font);
+    Password_input = new Text_input(410, 640, 100, 50, color, font);
 }
 
 LoginWindow::~LoginWindow()
@@ -113,88 +114,171 @@ LoginWindow::~LoginWindow()
 void LoginWindow::Enter()
 {
     running=true;
-    Username_input=new TextInput(renderer,"font/SourceCodePro-Bold.ttf",16,color,410,580);
-    Password_input=new TextInput(renderer,"font/SourceCodePro-Bold.ttf",16,color,410,580);
 }
 
+// void LoginWindow::Update()
+// {
+//     this->obj->Load_data();
+//     bool login_flag=false;
+//     bool pass_flag=false;
+//     while(running)
+//     {
+//         SDL_Event event;
+//         while(SDL_PollEvent(&event))
+//         {
+//             switch(event.type)
+//             {
+//                 case SDL_QUIT:
+//                 {
+//                 shutdown();
+
+//                 }
+//                 case SDL_MOUSEBUTTONDOWN:
+//                 {         
+                
+//                 if(this->Return_button->handleEvent(&event)) 
+//                     {
+//                         std::cout<<"clicked"<<std::endl;
+//                         currentWindow=mainWindow; 
+//                         running=false;
+//                     }
+//                 else if(this->Username->handleEvent(&event))
+//                     {
+//                         std::cout<<"clicked"<<std::endl;
+//                         SDL_StartTextInput();
+//                     }
+//                     else if(this->Password->handleEvent(&event))
+//                     {
+//                         std::cout<<"clicked"<<std::endl;
+//                         SDL_StartTextInput();
+//                     }
+//                     else if(this->Login->handleEvent(&event))
+//                     {
+//                         if(this->obj->search(u_Username))
+//                         {
+//                         string temp=this->obj->getInfo(u_Username)->password;
+//                         if(temp==u_Password)
+//                         {
+//                             std::cout<<"Login success!"<<std::endl;
+//                             currentWindow=mainWindow;
+//                             running=false;
+//                         }
+//                         }
+//                     }
+//                     break;
+//                 }
+
+//                 case SDL_TEXTINPUT:
+//                 {
+//                 if(SDL_IsTextInputActive())
+//                     {
+//                         Username_input->handleEvent(&event);
+//                        Password_input->handleEvent(&event);
+//                     }
+//                     break;
+//                 }
+//             }
+//         }
+//         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+//         SDL_RenderClear(renderer);
+//         SDL_RenderCopy(renderer,background,NULL,NULL);
+//         Return_button->draw(renderer);
+//         Username->draw(renderer);
+//         Password->draw(renderer);
+//         Login->draw(renderer);
+//         Username_input->render();
+//         Password_input->render();
+//         SDL_RenderPresent(renderer);
+//     }
+// }
 void LoginWindow::Update()
 {
-    this->obj->Load_data();
-    while(running)
+    // Other code...
+
+    bool textInputActive = false;  // Flag to track if any text input should be active
+
+    while (running)
     {
         SDL_Event event;
-        while(SDL_PollEvent(&event))
+        while (SDL_PollEvent(&event))
         {
-            switch(event.type)
+            switch (event.type)
             {
-                case SDL_QUIT:
-                {
-                shutdown();
+                // Other cases...
 
-                }
                 case SDL_MOUSEBUTTONDOWN:
-                {         
-                
-                if(this->Return_button->handleEvent(&event)) 
+                {
+                    if (this->Return_button->handleEvent(&event))
                     {
-                        std::cout<<"clicked"<<std::endl;
-                        currentWindow=mainWindow; 
-                        running=false;
+                        std::cout << "Return button clicked" << std::endl;
+                        currentWindow = mainWindow;
+                        running = false;
                     }
-                else if(this->Username->handleEvent(&event))
+                    else if (this->Username->handleEvent(&event))
                     {
-                        std::cout<<"clicked"<<std::endl;
-                        Username_input->setFlag(true);
-                        Password_input->setFlag(false);
+                        std::cout << "Username button clicked" << std::endl;
+                        textInputActive = true;
+                        Username_input->setClicked(true);
+                        Password_input->setClicked(false);
                     }
-                    else if(this->Password->handleEvent(&event))
+                    else if (this->Password->handleEvent(&event))
                     {
-                        std::cout<<"clicked"<<std::endl;
-                        Password_input->setFlag(true);
-                        Username_input->setFlag(false);
+                        std::cout << "Password button clicked" << std::endl;
+                        textInputActive = true;
+                        Password_input->setClicked(true);
+                        Username_input->setClicked(false);
                     }
-                    else if(this->Login->handleEvent(&event))
+                    else if (this->Login->handleEvent(&event))
                     {
-                        if(this->obj->search(u_Username))
+                        // Handle login button click
+                        if (this->obj->search(u_Username))
                         {
-                        string temp=this->obj->getInfo(u_Username)->password;
-                        if(temp==u_Password)
-                        {
-                            std::cout<<"Login success!"<<std::endl;
-                            currentWindow=mainWindow;
-                            running=false;
-                        }
+                            std::string temp = this->obj->getInfo(u_Username)->password;
+                            if (temp == u_Password)
+                            {
+                                std::cout << "Login success!" << std::endl;
+                                currentWindow = mainWindow;
+                                running = false;
+                            }
                         }
                     }
                     break;
                 }
 
-                case SDL_TEXTINPUT:
+                case SDL_KEYDOWN:
                 {
-                if(this->Username_input->getFlag())
+                    if (textInputActive)
                     {
-                        std::cout<<"Nhap Username:";
-                        Username_input->handleEvent(&event,window);
-                        this->u_Username=Username_input->Get_input();
+                        if (Username_input->isClicked())
+                        {
+                            Username_input->handleEvent(&event);
+                        }
+                        else if (Password_input->isClicked())
+                        {
+                            Password_input->handleEvent(&event);
+                        }
                     }
-                else if(this->Password_input->getFlag())
-                    {
-                        std::cout<<"Nhap Password:";
-                        Password_input->handleEvent(&event,window);
-                        this->u_Password=Password_input->Get_input();
-                    }
+                    break;
+                }
+
+                case SDL_KEYUP:
+                {
+                    // Handle key release events if needed
                     break;
                 }
             }
         }
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer,background,NULL,NULL);
-        Return_button->draw(renderer);
-        Username->draw(renderer);
-        Password->draw(renderer);
-        Login->draw(renderer);
-        SDL_RenderPresent(renderer);
+
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, background, NULL, NULL);
+    Return_button->draw(renderer);
+    Username->draw(renderer);
+    Password->draw(renderer);
+    Login->draw(renderer);
+    Username_input->render();
+    Password_input->render();
+    SDL_RenderPresent(renderer);
     }
 }
 
@@ -208,6 +292,10 @@ ProjectWindow::ProjectWindow()
 {
     background=TextureManager::Texture("Image/ProjectTheme.png",renderer);
     return_main=new Button(380,50,520,100,"Image/Image_to_return_main.png",renderer);
+    Trending_button=new Button(93,150,400,100,"Image/Trending.png",renderer);
+    Nearly_button=new Button(93,250,400,100,"Image/Nearly.png",renderer);
+    JustLaunch_button=new Button(93,350,400,100,"Image/Just launch.png",renderer);
+    Everything_button=new Button(93,450,400,100,"Image/everything.png",renderer);
 }
 
 ProjectWindow::~ProjectWindow()
@@ -250,6 +338,10 @@ void ProjectWindow::Update()
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,background,NULL,NULL);
         return_main->draw(renderer);
+        Trending_button->draw(renderer);
+        Nearly_button->draw(renderer);
+        JustLaunch_button->draw(renderer);
+        Everything_button->draw(renderer);
         SDL_RenderPresent(renderer);
     }
 }
