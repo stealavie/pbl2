@@ -1,31 +1,29 @@
 #pragma once
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <string>
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_image.h>
+#include<SDL2/SDL_ttf.h>
 #include<iostream>
-class TextInput 
+
+class Text_input
 {
-private:
-    SDL_Renderer* renderer;
-    TTF_Font* font;
+    private:
+    SDL_Rect rect;
     SDL_Color color;
-    std::string input;
-    int x, y;
+    TTF_Font* font;
+    SDL_Surface* textSurface;
+    SDL_Texture* textTexture;
+    std::string text;
     bool flag;
-public:
+    public:
+     Text_input(int, int, int, int, SDL_Color, TTF_Font*);
+    ~Text_input();
+    void handleEvent(SDL_Event*);
 
-    TextInput(SDL_Renderer*, const char*,const int&, SDL_Color, int, int);
-        
-    ~TextInput();
+    void updateTexture();
 
-    void handleEvent(SDL_Event*,SDL_Window*);
+    void render();
 
-    void draw();
+    void setClicked(bool);
 
-    std::string Get_input();
-
-    void setFlag(bool);
-
-    bool getFlag();
+    bool isClicked();
 };
