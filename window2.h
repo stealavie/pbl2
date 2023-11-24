@@ -2,8 +2,8 @@
 #include"TextureManagement.h"
 #include"Button.h"
 #include<iostream>
-#include"Text_input.h"
-#include"Trie.h"
+#include"Text_input2.h"
+#include"User.h"
 class Window
 {
     public:
@@ -23,6 +23,7 @@ class Window
     static Window* projectWindow;
     static TTF_Font* font;
     static SDL_Color color;
+
 };
 
 class MainWindow : public Window
@@ -42,7 +43,7 @@ class LoginWindow : public Window
 {
     private:
     Button* Return_button,*Password,*Username,*Login;
-    TextInput* Username_input,*Password_input;
+    Text_input* Username_input,*Password_input;
     std::string u_Username,u_Password;
     Trie* obj;
     public:
@@ -57,7 +58,8 @@ class LoginWindow : public Window
 class  ProjectWindow : public Window
 {
     private:
-    Button* return_main;
+    Button* return_main,*Trending_button,*Nearly_button,
+            *JustLaunch_button,*Everything_button;
     public:
     void Enter();
     void Update();
