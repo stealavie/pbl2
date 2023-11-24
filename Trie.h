@@ -1,7 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<vector>
-#include"RSA.h"
+using namespace std;
 typedef struct info
 {
     std::string password;
@@ -33,7 +33,7 @@ public:
 
     info* getInfo();
 
-    
+    friend bool operator == (info*,const string&);
 };
 
 
@@ -50,8 +50,8 @@ class Trie : public Trie_node
     bool search(const std::string&);
     void Load_data();
     void update_data();
-    void Print_trie(Trie_node*,const std::string&);
+    // void Print_trie(Trie_node*,const std::string&);
     friend std::vector<std::string> get_all_user(Trie_node*,std::string);
-
+    info* getInfo(const string&);
     void traverseTrie(Trie_node*,vector<pair<string, info*>> &,std::string);
 };
