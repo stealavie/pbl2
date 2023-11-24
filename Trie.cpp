@@ -41,10 +41,18 @@ void Trie_node::setInfo(info* Info)
     this->Info=Info;
 }
 
-info* Trie_node::getInfo()
+info* Trie::getInfo(const string& password)
 {
-    
-    return this->Info;
+    Trie_node* node=this->root;
+    for(char c : password)
+    {
+        if(!node->getChild(c))
+        {
+            break;
+        }
+        node=node->getChild(c);
+    }
+    return node->getInfo();
 }
 
 Trie::Trie()
@@ -54,7 +62,6 @@ Trie::Trie()
 
 void Trie::insert(const std::string& word,info* Info)
 {
-    RSA* obj=new RSA();
   Trie_node* node = root;
         for (char i : word) {
             
@@ -65,8 +72,6 @@ void Trie::insert(const std::string& word,info* Info)
         node->setEndOfWord(true);
         node->setInfo(Info);
         std::string username_pass=node->getInfo()->password;
-        obj->encrypt(username_pass);
-        delete obj;
 }
 
 bool Trie::search(const std::string& word)
@@ -108,47 +113,10 @@ void Trie:: Load_data()
         country.clear();
     }
     ip.close();
-    // std::ifstream ip("Data_test.csv");
-
-    // if(!ip.is_open()) std::cout << "ERROR: File Open" << '\n';
-
-    // std::string email;
-    // std::string password;
-    // std::string country;
-
-    // while(ip.good()){
-
-    //     std::getline(ip,email,',');
-    //     std::getline(ip,password,',');
-    //     std::getline(ip,country,'\n');
-
-    //     info* new_info = new info;
-
-    //     new_info->password = password;
-    //     new_info->country = country;
-
-    //     insert(email,new_info);
-
-    //     email.clear();
-    //     password.clear();
-    //     country.clear();
-    // }
-    // ip.close();
+   
 }
 }
 
-void Trie::Print_trie(Trie_node* node, const std::string& str) {
-    if (node->getEndOfWord()) {
-        std::cout << str << ": " << node->getInfo()->country<<","<<node->getInfo()->password<< std::endl;
-    }
-    
-    for (char ch = 'a'; ch <= 'z'; ch++) {
-        Trie_node* child = node->getChild(ch);
-        if (child != NULL) {
-            Print_trie(child, str + ch);
-        }
-    }
-}
 
 
 void Trie::update_data( ){
@@ -187,16 +155,27 @@ Trie_node::~Trie_node()
 {
     for(int i = 0; i < 26; ++i)
     delete [] child[i];
-delete [] child;
+    delete [] child;
 delete this->Info;
 }
 
 
-void traverseTrie( Trie_node *root, vector<pair<string, info*>> &words, string word) {
+void Trie::traverseTrie( Trie_node *root, vector<pair<string, info*>> &words, string word) {
     if (root->getEndOfWord())
         words.push_back(make_pair(word, root->getInfo()));
     for (char c = 'a'; c <= 'z'; ++c) {
         if (root->getChild(c))
             traverseTrie(root->getChild(c), words, word + c);
     }
+}
+
+bool operator==(info* infor,const string& password)
+{
+    if(infor->password==password) return true;
+    else return false;
+}
+
+info* Trie_node::getInfo()
+{
+    return this->Info;
 }
