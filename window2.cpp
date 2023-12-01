@@ -82,8 +82,8 @@ void Window::shutdown()
 MainWindow::MainWindow()
 {
     background=TextureManager::Texture("Image/MainTheme.png",renderer);
-    Login_button=new Button(1100,50,100,50,"Image/Button2.png",renderer);
-    Explore_button=new Button(0,320,300,292,"Image/Button3.png",renderer);
+    Login_button=new Button(1100,50,100,43,"Image/Button2.png",renderer);
+    Explore_button=new Button(70,50,127,43,"Image/Button3.png",renderer);
     
 }
 
@@ -97,10 +97,10 @@ LoginWindow::LoginWindow()
 {
     obj=new Trie();
     background=TextureManager::Texture("Image/LoginWindow.png",renderer);
-    Return_button=new Button(380,50,520,100,"Image/Image_to_return_main.png",renderer);
-    Username=new Button(200,580,200,50,"Image/Username.png",renderer);
-    Password=new Button(200,630,200,50,"Image/Password.png",renderer);
-    Login=new Button(220,690,100,50,"Image/Login_button.png",renderer);
+    Return_button=new Button(70,50,133,43,"Image/menu_login.png",renderer);
+    Username=new Button(300,350,200,50,"Image/Username.png",renderer);
+    Password=new Button(300,400,200,50,"Image/Password.png",renderer);
+    Login=new Button(615,470,100,50,"Image/Login_button.png",renderer);
     Username_input = new Text_input(410, 580, 100, 50, color, font);
     Password_input = new Text_input(410, 640, 100, 50, color, font);
 }
@@ -204,7 +204,6 @@ void LoginWindow::Update()
         {
             switch (event.type)
             {
-                // Other cases...
 
                 case SDL_MOUSEBUTTONDOWN:
                 {
@@ -291,7 +290,7 @@ void LoginWindow::Exit()
 ProjectWindow::ProjectWindow()
 {
     background=TextureManager::Texture("Image/ProjectTheme.png",renderer);
-    return_main=new Button(380,50,520,100,"Image/Image_to_return_main.png",renderer);
+    return_main=new Button(70,50,133,43,"Image/Image_to_return_main.png",renderer);
     Trending_button=new Button(93,150,400,100,"Image/Trending.png",renderer);
     Nearly_button=new Button(93,250,400,100,"Image/Nearly.png",renderer);
     JustLaunch_button=new Button(93,350,400,100,"Image/Just launch.png",renderer);
@@ -351,7 +350,6 @@ void ProjectWindow::Exit()
 {
 
 }
-
 
 
 
