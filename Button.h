@@ -1,21 +1,22 @@
 #pragma once
-#include <iostream>
+#include<SDL_ttf.h>
+#include<iostream>
 #include"TextureManagement.h"
-class Button {
-    private:
-    SDL_Rect rect;
-    SDL_Texture* obj;
-    public:
-    Button(int, int, int, int,const char*,SDL_Renderer*);
-
-    bool handleEvent(SDL_Event*);
-
-    void draw(SDL_Renderer*);
-
-    SDL_Texture* getTex();
-
-    SDL_Rect getRect();
-
+class Button
+{
+    SDL_Renderer* renderer;
+    SDL_Texture* textTexture=NULL;
+    SDL_Surface* textSurface=NULL;
+    SDL_Rect rect, textRect;
+    SDL_Color textColor;
+    TTF_Font* font;
+public:
+    bool selected = false;
+    bool click = false;
+    Button(int, int, int, int, SDL_Renderer*,const char*);
     ~Button();
+    void HandleEvent(SDL_Event*);
 
+    void draw();
 };
+
