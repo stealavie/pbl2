@@ -2,6 +2,7 @@
 
 #include"Button.h"
 #include"TextBox.h"
+#include"ComboBox.h"
 
 class Window 
 {
@@ -53,8 +54,9 @@ public:
 class  ProjectWindow : public Window
 {
 private:
-    Button* return_main, * Trending_button, * Nearly_button,
-        * JustLaunch_button, * Everything_button;
+    Button* return_main, * show_me, * on,
+        * sorted;
+    ComboBox* show, *on_where,*sorted_by;
 public:
     void Enter();
     void Update();
