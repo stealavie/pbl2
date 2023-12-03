@@ -153,12 +153,17 @@ void LoginWindow::Update()
 
 ProjectWindow::ProjectWindow()
 {
+	
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	
 	background = TextureManager::Texture("D:/Image/Image/ProjectTheme.png", renderer);
-	return_main = new Button(380, 50, 520, 100,  renderer, "RETURNRNRN");
-	Trending_button = new Button(93, 150, 400, 100, renderer, "TRENDINGNGNGNG");
-	Nearly_button = new Button(93, 250, 400, 100, renderer, "NEARLYYYYYY");
-	JustLaunch_button = new Button(93, 350, 400, 100, renderer, "JUSTTTTTTTTTTT");
-	Everything_button = new Button(93, 450, 400, 100, renderer, "EVERYTHINGGGGGGGGG");
+	return_main = new Button(1162, 40, 100, 30,  renderer, "home");
+	show_me= new Button(80, 85, 130, 100, renderer, "SHOW ME");
+	on= new Button(370, 85, 130, 100, renderer, "PROJECT ON");
+	sorted= new Button(695, 85, 130, 100, renderer, "SORTED BY");
+	show = new ComboBox(200,85,150,100,Font,renderer);
+	on_where= new ComboBox(530, 85, 150, 100, Font, renderer);
+	sorted_by= new ComboBox(840, 85, 150, 100, Font, renderer);
 }
 
 ProjectWindow::~ProjectWindow()
@@ -173,6 +178,14 @@ void ProjectWindow::Enter()
 
 void ProjectWindow::Update()
 {
+	show->addItem("TRENDING");
+	show->addItem("ART");
+	show->addItem("FILM");
+	show->addItem("JUST OUT");
+	on_where->addItem("earth");
+	on_where->addItem("siuuu");
+	on_where->addItem("siuuu");
+	on_where->addItem("yay");
 	while (running)
 	{
 		SDL_Event event;
@@ -187,6 +200,9 @@ void ProjectWindow::Update()
 			}
 			}
 			return_main->HandleEvent(&event);
+			show->handleEvent(&event);
+			on_where->handleEvent(&event);
+			sorted_by->handleEvent(&event);
 		}
 		if (return_main->click)
 		{
@@ -198,10 +214,12 @@ void ProjectWindow::Update()
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, background, NULL, NULL);
 		return_main->draw();
-		Trending_button->draw();
-		Nearly_button->draw();
-		JustLaunch_button->draw();
-		Everything_button->draw();
+		show_me->draw();
+		on->draw();
+		sorted->draw();
+		show->draw(0,255,255);
+		on_where->draw(0, 255, 255);
+		sorted_by->draw(0, 255, 255);
 		SDL_RenderPresent(renderer);
 	}
 }
