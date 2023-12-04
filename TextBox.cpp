@@ -19,9 +19,8 @@ TextBox::TextBox(SDL_Renderer* renderer)
 TextBox::~TextBox()
 {
     SDL_DestroyRenderer(renderer);
-    font = NULL;
     renderer = NULL;
-    textTexture.free(); // Free the text texture
+    textTexture.free();
 }
 
 void TextBox::setPosition(int x, int y)
@@ -62,10 +61,6 @@ void TextBox::handleEvent(SDL_Event* e)
             text = tempText;
             SDL_free(tempText);
         }
-        else if (e->key.keysym.sym == SDLK_RETURN)
-        {
-            // Handle Enter key, e.g., submit the text
-        }
     }
     else if (e->type == SDL_TEXTINPUT && isSelected)
     {
@@ -73,13 +68,13 @@ void TextBox::handleEvent(SDL_Event* e)
         {
             if (textTexture.loadFromRenderedText(text,renderer))
             {
-                // If yes, remove the first character to make room for the new one
                 if (textTexture.getWidth() >= box.w - 10)
                 {
                     text = text.substr(1);
                 }
 
                 text += e->text.text;
+                temp_text = text;
             }
             else
             {
@@ -111,5 +106,10 @@ void TextBox::render()
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderDrawRect(renderer, &box);
     }
+}
+
+std::string TextBox::getText() const
+{
+    return this->temp_text;
 }
 
