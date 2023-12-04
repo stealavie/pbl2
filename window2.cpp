@@ -8,8 +8,10 @@ SDL_Color Window::color{ 0,0,0,0 };
 
 Window* Window::mainWindow = new MainWindow;
 Window* Window::loginWindow = new LoginWindow;
-Window* Window::currentWindow = mainWindow;
 Window* Window::projectWindow = new ProjectWindow;
+Window* Window::currentWindow = mainWindow;
+Window* Window::Discoverwindow = new DiscoverWindow;
+
 
 Window::Window()
 {
@@ -57,7 +59,7 @@ void MainWindow::Update()
 		}
 		else if (Explore_button->click)
 		{
-			currentWindow = projectWindow;
+			currentWindow = Discoverwindow;
 			running = false;
 			continue;
 		}
@@ -84,8 +86,10 @@ MainWindow::~MainWindow()
 
 }
 
+
 LoginWindow::LoginWindow()
 {
+
 	background = TextureManager::Texture("D:/Image/Image/LoginWindow.png", renderer);
 	Return_button = new Button(40, 70, 100, 30, renderer, "Home");
 	Username = new Button(372, 382, 100, 30, renderer, "Username");
@@ -93,6 +97,8 @@ LoginWindow::LoginWindow()
 	Login = new Button(500, 460, 100, 30, renderer, "LOGIN");
 	b_password = new TextBox(renderer);
 	b_username = new TextBox(renderer);
+	User* p = new User;
+	p->Load_data();
 }
 
 LoginWindow::~LoginWindow()
@@ -104,8 +110,8 @@ LoginWindow::~LoginWindow()
 void LoginWindow::Enter()
 {
 	running = true;
-	this->b_password->setPosition(490, 382);
-	this->b_username->setPosition(490, 422);
+	this->b_username->setPosition(490, 382);
+	this->b_password->setPosition(490, 422);
 }
 
 void LoginWindow::Update()
@@ -126,14 +132,23 @@ void LoginWindow::Update()
 			}
 			Return_button->HandleEvent(&event);
 			Login->HandleEvent(&event);
-			b_password->handleEvent(&event);
 			b_username->handleEvent(&event);
+			b_password->handleEvent(&event);
+			
 		}
 		if (Return_button->click)
 		{
 			currentWindow = mainWindow;
 			running = false;
 			continue;
+		}
+		if (Login->click)
+		{
+			std::string m_username = b_username->getText();
+			std::string password = b_password->getText();
+			if (p->search(m_username) && p->getInfo() == password)
+				cout << "login success" << endl;
+			else cout << "invalid username or password" << endl;
 		}
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
@@ -151,7 +166,9 @@ void LoginWindow::Update()
 
 
 
-ProjectWindow::ProjectWindow()
+
+
+DiscoverWindow::DiscoverWindow()
 {
 	
 	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
@@ -166,17 +183,20 @@ ProjectWindow::ProjectWindow()
 	sorted_by= new ComboBox(840, 85, 150, 100, Font, renderer);
 }
 
-ProjectWindow::~ProjectWindow()
+DiscoverWindow::~DiscoverWindow()
 {
 	SDL_DestroyTexture(background);
+	show->~ComboBox();
+	on_where->~ComboBox();
+	sorted_by->~ComboBox();
 }
 
-void ProjectWindow::Enter()
+void DiscoverWindow::Enter()
 {
 	running = true;
 }
 
-void ProjectWindow::Update()
+void DiscoverWindow::Update()
 {
 	show->addItem("TRENDING");
 	show->addItem("ART");
@@ -220,6 +240,59 @@ void ProjectWindow::Update()
 		show->draw(0,255,255);
 		on_where->draw(0, 255, 255);
 		sorted_by->draw(0, 255, 255);
+		SDL_RenderPresent(renderer);
+	}
+}
+
+
+ProjectWindow::ProjectWindow()
+{
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+
+	std::string longText = "Get the ultimate travel version of the award winning Star Realms Deckbuilding Game! The Deluxe Colonial Collection is an awesome, all-foil 2-4 player card set with 4 high-quality score"
+		"dials and a beautiful 9x25 game board in a sturdy magnetically - sealed 3.5x4.5x9 box! "
+		"Own the perfect big-box version of the award winning Star Realms Deckbuilding Game! The Deluxe Nova Collection is a beautiful all-foil 1-6 player card set with 6 high-quality score dials and a beautiful 14x24 game board in a large magnetically-sealed box! ";
+
+	background = TextureManager::Texture("D:/Image/Image/ProjectTheme.png", renderer);
+	project_img = new IMG_Tex(renderer, "D:/Image/Image/test.jpg", 50, 100, 300, 300);
+	box_description = new Text(renderer, Font, longText,500,120, 400, 400, 380, 380, 20);
+}
+
+ProjectWindow::~ProjectWindow()
+{
+	
+	SDL_DestroyTexture(background);
+	project_img->~IMG_Tex();
+	box_description->~Text();
+}
+
+void ProjectWindow::Enter()
+{
+	running = true;
+}
+
+void ProjectWindow::Update()
+{
+	while (running)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+			{
+				shutdown();
+				break;
+			}
+			}
+			box_description->HandleEvent(&event);
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, background, NULL, NULL);
+		project_img->draw(renderer);
+		box_description->draw();
 		SDL_RenderPresent(renderer);
 	}
 }
