@@ -3,6 +3,9 @@
 #include"Button.h"
 #include"TextBox.h"
 #include"ComboBox.h"
+#include"Text.h"
+#include"IMG_Tex.h"
+#include"User.h"
 
 class Window 
 {
@@ -14,6 +17,7 @@ public:
     SDL_Texture* background;
     virtual void Enter() = 0;
     virtual void Update() = 0;
+
     bool running = false;
     void shutdown();
     Window();
@@ -21,6 +25,7 @@ public:
     static Window* mainWindow;
     static Window* loginWindow;
     static Window* currentWindow;
+    static Window* Discoverwindow;
     static Window* projectWindow;
 };
 
@@ -31,6 +36,7 @@ private:
 public:
     void Enter();
     void Update();
+
     MainWindow();
     virtual ~MainWindow();
 };
@@ -40,7 +46,7 @@ class LoginWindow : public Window
 {
 private:
     Button* Return_button, * Password, * Username, * Login;
-    std::string u_Username, u_Password;
+    User* p;
     TextBox* b_username, * b_password;
 public:
     void Enter();
@@ -51,20 +57,24 @@ public:
 };
 
 
-class  ProjectWindow : public Window
+class  DiscoverWindow : public Window
 {
 private:
     Button* return_main, * show_me, * on,
         * sorted;
     ComboBox* show, *on_where,*sorted_by;
+    Text* test;
 public:
     void Enter();
     void Update();
 
-    ProjectWindow();
+    DiscoverWindow();
 
-    virtual ~ProjectWindow();
+    virtual ~DiscoverWindow();
 };
+
+
+
 
 
 
