@@ -4,19 +4,20 @@
 using namespace std;
 class Project 
 {
-    protected:
+    public:
     string name;//ten du an
     string goal;//muc tieu
-    float money;
+    double money;
 
     public:
     Project();
     ~Project();
-    float getMoney() const { return money; }
-    string getName() const { return name;}
+    //float getMoney() const { return money; }
+    //string getName() const { return name;}
     
     string GetInfo() const;
-    void Field();
+    string ReadInfo() const;
+    //void Field();
     void Input();
     void Output();
 };
