@@ -9,4 +9,9 @@ class User : public Trie
     void Load_data();
     void update_data();
     void Insert(const string&,const string&);
+    
+    void Print();
+
+
+
 };
