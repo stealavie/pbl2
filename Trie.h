@@ -1,14 +1,19 @@
-#pragma once
 #include<iostream>
 #include<fstream>
 #include<vector>
 using namespace std;
+typedef struct info
+{
+    std::string password;
+    std::string country;
+}info;
+
 
 class Trie_node {
-protected:
+private:
     Trie_node* child[26];
     bool isEndOfWord;
-    string info;
+    info* Info;
 public:
     Trie_node(); 
 
@@ -24,10 +29,11 @@ public:
 
     Trie_node* getChild(char) const; 
 
-    void setInfo(const string&);
+    void setInfo(info*);
 
-    string getInfo() const;
+    info* getInfo();
 
+    friend bool operator == (info*,const string&);
 };
 
 
@@ -40,10 +46,15 @@ class Trie : public Trie_node
     Trie();
     ~Trie();
     Trie_node* getRoot();
-    virtual void Insert(const string&,const string&)=0;
+    void insert(const std::string&,info*);
     bool search(const std::string&);
-    virtual void Load_data()=0;
-    virtual void update_data()=0;
+    void Load_data();
+    void update_data();
+    // void Print_trie(Trie_node*,const std::string&);
     friend std::vector<std::string> get_all_user(Trie_node*,std::string);
-    void traverseTrie(Trie_node*,vector<string> &,string);
+    info* getInfo(const string&);
+    void traverseTrie(Trie_node*,vector<pair<string, info*>> &,std::string);
+
+
 };
+
