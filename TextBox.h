@@ -11,6 +11,8 @@ public:
     void handleEvent(SDL_Event* e);
     void render();
 
+    std::string getText() const;
+
 private:
     SDL_Renderer* renderer;
     TTF_Font* font;
@@ -19,6 +21,8 @@ private:
     std::string text;
     bool isSelected;
     LTexture textTexture;
+
+    std::string temp_text;
 
     void renderText();
 };
