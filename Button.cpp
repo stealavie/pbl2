@@ -6,7 +6,7 @@ Button::Button(int x, int y, int w, int h, SDL_Renderer* ren, const char* Text):
     TTF_Init();
     SDL_Init(SDL_INIT_EVERYTHING);
     textColor = { 0,0,0 };
-    font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+    font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
     if (!font)
     {
         std::cout << "cant open file" << TTF_GetError() << std::endl;
@@ -77,5 +77,8 @@ void Button::draw()
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
 
 }
+
+
+
 
 
