@@ -4,7 +4,7 @@
 TextBox::TextBox(SDL_Renderer* renderer)
 {
     this->renderer = renderer;
-    font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+    font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
     if (font == NULL)
     {
         std::cout << "Error:" << TTF_GetError() << std::endl;
@@ -61,6 +61,9 @@ void TextBox::handleEvent(SDL_Event* e)
             text = tempText;
             SDL_free(tempText);
         }
+
+        // Thêm điều kiện chờ để tránh xử lý sự kiện nhiều lần
+        SDL_Delay(150);
     }
     else if (e->type == SDL_TEXTINPUT && isSelected)
     {
@@ -112,4 +115,6 @@ std::string TextBox::getText() const
 {
     return this->temp_text;
 }
+
+
 
