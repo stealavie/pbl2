@@ -3,9 +3,11 @@
 #include"Button.h"
 #include"TextBox.h"
 #include"ComboBox.h"
-// #include"Text.h"
-// #include"IMG_Tex.h"
+#include"Text.h"
+#include"IMG_Tex.h"
 #include"User.h"
+#include"ProjectManagement.h"
+#include"Text_tex.h"
 
 class Window 
 {
@@ -63,28 +65,15 @@ public:
 };
 
 
-// class  ProjectWindow : public Window
-// {
-// private:
-//     Button* return_main, * Trending_button, * Nearly_button,
-//         * JustLaunch_button, * Everything_button;
-// public:
-//     void Enter();
-//     void Update();
-
-//     ProjectWindow();
-
-//     virtual ~ProjectWindow();
-// };
-
-
 class  DiscoverWindow : public Window
 {
 private:
     Button* return_main, * show_me, * on,
-        * sorted;
+        * sorted, * next, * previous;
     ComboBox* show, *on_where,*sorted_by;
-    // Text* test;
+    ProjectManagement* obj;
+
+    
 public:
     void Enter();
     void Update();
@@ -92,6 +81,22 @@ public:
     DiscoverWindow();
 
     virtual ~DiscoverWindow();
+};
+
+
+class ProjectWindow : public Window
+{
+    Text* box_description;
+    IMG_Tex* project_img;
+    LTexture* description;
+public:
+    void Enter();
+    void Update();
+
+    ProjectWindow();
+
+    virtual ~ProjectWindow();
+
 };
 
 
