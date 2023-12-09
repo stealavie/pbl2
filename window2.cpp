@@ -314,85 +314,6 @@ void UserWindow::Update()
 	SDL_StopTextInput();
 }
 
-
-DiscoverWindow::DiscoverWindow()
-{
-	
-	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
-	
-	background = TextureManager::Texture("Image/ProjectTheme.png", renderer);
-	return_main = new Button(1162, 40, 100, 30,  renderer, "home");
-	show_me= new Button(80, 85, 130, 100, renderer, "SHOW ME");
-	on= new Button(370, 85, 130, 100, renderer, "PROJECT ON");
-	sorted= new Button(695, 85, 130, 100, renderer, "SORTED BY");
-	show = new ComboBox(200,85,150,100,Font,renderer);
-	on_where= new ComboBox(530, 85, 150, 100, Font, renderer);
-	sorted_by= new ComboBox(840, 85, 150, 100, Font, renderer);
-}
-
-DiscoverWindow::~DiscoverWindow()
-{
-	SDL_DestroyTexture(background);
-	show->~ComboBox();
-	on_where->~ComboBox();
-	sorted_by->~ComboBox();
-}
-
-void DiscoverWindow::Enter()
-{
-	running = true;
-}
-
-void DiscoverWindow::Update()
-{
-	show->addItem("TRENDING");
-	show->addItem("ART");
-	show->addItem("FILM");
-	show->addItem("JUST OUT");
-	on_where->addItem("earth");
-	on_where->addItem("siuuu");
-	on_where->addItem("siuuu");
-	on_where->addItem("yay");
-	while (running)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-			{
-				shutdown();
-				break;
-			}
-			}
-			return_main->HandleEvent(&event);
-			show->handleEvent(&event);
-			on_where->handleEvent(&event);
-			sorted_by->handleEvent(&event);
-		}
-		if (return_main->click)
-		{
-			currentWindow = mainWindow;
-			running = false;
-			continue;
-		}
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, background, NULL, NULL);
-		return_main->draw();
-		show_me->draw();
-		on->draw();
-		sorted->draw();
-		show->draw(0,255,255);
-		on_where->draw(0, 255, 255);
-		sorted_by->draw(0, 255, 255);
-		SDL_RenderPresent(renderer);
-	}
-}
-
-
-
 FaqWindow::FaqWindow()
 {
 	
@@ -645,6 +566,169 @@ void DoneCreateWindow::Update()
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, background, NULL, NULL);
 		ok->draw();
+		SDL_RenderPresent(renderer);
+	}
+}
+
+DiscoverWindow::DiscoverWindow()
+{
+	
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	
+	background = TextureManager::Texture("Image/ProjectTheme.png", renderer);
+	return_main = new Button(1162, 40, 100, 30,  renderer, "home");
+	show_me= new Button(80, 85, 130, 100, renderer, "SHOW ME");
+	on= new Button(370, 85, 130, 100, renderer, "PROJECT ON");
+	sorted= new Button(695, 85, 130, 100, renderer, "SORTED BY");
+	next = new Button(1000, 180, 100, 50, renderer,"NEXT");
+	previous = new Button(82, 180, 100, 50, renderer, "PREVIOUS");
+	show = new ComboBox(200,85,150,100,Font,renderer);
+	on_where= new ComboBox(530, 85, 150, 100, Font, renderer);
+	sorted_by= new ComboBox(840, 85, 150, 100, Font, renderer);
+	obj = new ProjectManagement;
+}
+
+DiscoverWindow::~DiscoverWindow()
+{
+	SDL_DestroyTexture(background);
+	show->~ComboBox();
+	on_where->~ComboBox();
+	sorted_by->~ComboBox();
+	obj->~ProjectManagement();
+	std::cout << "out" << std::endl;
+}
+
+void DiscoverWindow::Enter()
+{
+	running = true;
+
+}
+
+void DiscoverWindow::Update()
+{
+	obj->loadProjects("films_test.csv");
+	show->addItem("TRENDING");
+	show->addItem("ART");
+	show->addItem("FILM");
+	show->addItem("JUST OUT");
+	on_where->addItem("earth");
+	on_where->addItem("siuuu");
+	on_where->addItem("siuuu");
+	on_where->addItem("yay");
+	while (running)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+			{
+				shutdown();
+				break;
+			}
+			case SDL_MOUSEBUTTONDOWN:
+			{
+				currentProject = obj->getProjectByImage(renderer);	
+				break;
+			}
+			}
+			return_main->HandleEvent(&event);
+			show->handleEvent(&event);
+			on_where->handleEvent(&event);
+			sorted_by->handleEvent(&event);
+			obj->HandleEvent(&event);
+		}
+		if (return_main->click)
+		{
+			currentWindow = mainWindow;
+			running = false;
+			continue;
+		}
+		/*if (obj->isclicked)
+		{
+			std::cout << currentProject->name << std::endl;
+			std::cout << currentProject->description << std::endl;
+			std::cout << currentProject->imagePath << std::endl;
+			std::cout << currentProject->pledged << std::endl;
+
+			currentWindow = projectWindow;
+			running = false;
+			continue;
+		}*/
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, background, NULL, NULL);
+		return_main->draw();
+		show_me->draw();
+		on->draw();
+		sorted->draw();
+		next->draw();
+		previous->draw();
+		show->draw(0,255,255);
+		on_where->draw(0, 255, 255);
+		sorted_by->draw(0, 255, 255);
+		
+		obj->displayProjectsGrid(renderer, 82, 280, 1000, 400);
+		SDL_RenderPresent(renderer);
+		
+	}
+}
+ProjectWindow::ProjectWindow()
+{
+	
+	//std::cout << currentProject->description << std::endl;
+
+
+
+	
+
+	background = TextureManager::Texture("Image/projecttheme2resize.png", renderer);
+	//TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	//project_img = new IMG_Tex(renderer, temp->imagePath.c_str(), 170, 192, 600, 300);
+	//box_description = new Text(renderer, Font, (temp->description), 830, 192, 400, 300, 380, 380, 20);
+	
+	//description = new LTexture;
+	//description->loadFromRenderedText(temp->name, renderer);
+}
+
+ProjectWindow::~ProjectWindow()
+{
+	
+	SDL_DestroyTexture(background);
+	project_img->~IMG_Tex();
+	box_description->~Text();
+}
+
+void ProjectWindow::Enter()
+{
+	running = true;
+}
+
+void ProjectWindow::Update()
+{
+	
+	while (running)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+			{
+				shutdown();
+				break;
+			}
+			}
+			//box_description->HandleEvent(&event);
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, background, NULL, NULL);
+		//project_img->draw(renderer);
+		//box_description->draw();
+		//description->render(300, 100, renderer);
 		SDL_RenderPresent(renderer);
 	}
 }
