@@ -1,21 +1,26 @@
-#include"window2.h"
+#include"Window.h"
 
 
 SDL_Window* Window::window = SDL_CreateWindow("PBL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
 SDL_Renderer* Window::renderer = SDL_CreateRenderer(window, -1, 0);
-TTF_Font* Window::font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
+TTF_Font* Window::font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
 SDL_Color Window::color{ 0,0,0,0 };
 
 Window* Window::mainWindow = new MainWindow;
 Window* Window::loginWindow = new LoginWindow;
-Window* Window::currentWindow = mainWindow;
-// Window* Window::projectWindow = new ProjectWindow;
+Window* Window::Discoverwindow = new DiscoverWindow;
+Window* Window::projectWindow = new ProjectWindow;
 Window* Window::userWindow = new UserWindow;
-Window* Window::discoverWindow = new DiscoverWindow;
+
 Window* Window::faqWindow = new FaqWindow;
 Window* Window::registerWindow = new RegisterWindow;
 Window* Window::existedWindow = new ExistedWindow;
 Window* Window::donecreateWindow = new DoneCreateWindow;
+Window* Window::currentWindow = mainWindow;
+
+Project* Window::currentProject = NULL;
+
+
 
 Window::Window()
 {
@@ -27,16 +32,17 @@ Window::~Window()
 
 MainWindow::MainWindow()
 {
-	background = TextureManager::Texture("Image/MainTheme.png", renderer);
-	Login_button = new Button(1100, 70, 100, 30, renderer, "Login");
-	Register_button = new Button(1100, 170, 100, 30,renderer,"Register");
-	Explore_button = new Button(20, 70, 100, 30, renderer, "Explore");
-	Faq_button = new Button(1100, 680, 100, 30, renderer, "FAQs");
+	
 }
 
 void MainWindow::Enter()
 {
 	running = true;
+	background = TextureManager::Texture("Image/MainTheme.png", renderer);
+	Login_button = new Button(1100, 70, 100, 30, renderer, "Login");
+	Explore_button = new Button(20, 70, 100, 30, renderer, "Explore");
+	Register_button = new Button(1100, 170, 100, 30, renderer, "Register");
+	Faq_button = new Button(1100, 680, 100, 30, renderer, "FAQs");
 }
 
 void MainWindow::Update()
@@ -55,9 +61,9 @@ void MainWindow::Update()
 			}
 			}
 			Login_button->HandleEvent(&event);
-			Register_button->HandleEvent(&event);
 			Explore_button->HandleEvent(&event);
 			Faq_button->HandleEvent(&event);
+			Register_button->HandleEvent(&event);
 		}
 		if (Login_button->click)
 		{
@@ -65,15 +71,9 @@ void MainWindow::Update()
 			running = false;
 			continue;
 		}
-		else if (Register_button->click)
-		{
-			currentWindow = registerWindow;
-			running = false;
-			continue;
-		}
 		else if (Explore_button->click)
 		{
-			currentWindow = discoverWindow;
+			currentWindow = Discoverwindow;
 			running = false;
 			continue;
 		}
@@ -83,13 +83,19 @@ void MainWindow::Update()
 			running = false;
 			continue;
 		}
+		else if (Register_button->click)
+		{
+			currentWindow = registerWindow;
+			running = false;
+			continue;
+		}
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, background, NULL, NULL);
 		Login_button->draw();
-		Register_button->draw();
 		Explore_button->draw();
 		Faq_button->draw();
+		Register_button->draw();
 		SDL_RenderPresent(renderer);
 	}
 }
@@ -104,11 +110,35 @@ void Window::shutdown()
 MainWindow::~MainWindow()
 {
 	SDL_DestroyTexture(background);
-
+	std::cout << "out" << std::endl;
 }
+
+void MainWindow::Exit()
+{
+	MainWindow::~MainWindow();
+}
+
 
 LoginWindow::LoginWindow()
 {
+	
+
+}
+
+LoginWindow::~LoginWindow()
+{
+	SDL_DestroyTexture(background);
+	std::cout << "out" << std::endl;
+}
+
+void LoginWindow::Exit()
+{
+	LoginWindow::~LoginWindow();
+}
+
+void LoginWindow::Enter()
+{
+	running = true;
 	background = TextureManager::Texture("Image/LoginWindow.png", renderer);
 	Return_button = new Button(40, 70, 100, 30, renderer, "Home");
 	Username = new Button(372, 382, 100, 30, renderer, "Username");
@@ -117,25 +147,13 @@ LoginWindow::LoginWindow()
 	b_password = new TextBox(renderer);
 	b_username = new TextBox(renderer);
 	User* p = new User;
-	
-}
-
-LoginWindow::~LoginWindow()
-{
-	SDL_DestroyTexture(background);
-
-}
-
-void LoginWindow::Enter()
-{
-	running = true;
 	this->b_username->setPosition(490, 382);
 	this->b_password->setPosition(490, 422);
 }
 
 void LoginWindow::Update()
 {
-	
+
 	SDL_StartTextInput();
 	while (running)
 	{
@@ -168,36 +186,38 @@ void LoginWindow::Update()
 			std::string m_password = b_password->getText();
 
 
-            std::cout << m_username << ", " << m_password << std::endl;
+			std::cout << m_username << ", " << m_password << std::endl;
 
-            
-            //Thực hiện kiểm tra xem User có tồn tại trong Trie không và kiểm tra password
+
+			//Thực hiện kiểm tra xem User có tồn tại trong Trie không và kiểm tra password
 			p->Load_data();
-            bool user_a_exists = p->search(m_username);
+			bool user_a_exists = p->search(m_username);
 
 
-            if (user_a_exists) {
-                // Lấy thông tin của User a
-                info* user_info = p->getInfo(m_username);
+			if (user_a_exists) {
+				// Lấy thông tin của User a
+				info* user_info = p->getInfo(m_username);
 
-                // Kiểm tra password
-                if (user_info && user_info->password == m_password) {
-                    std::cout << "login success" << std::endl;
-			        currentWindow = userWindow;
-			        running = false;
-			        continue;
-                    
-                } else {
-                    std::cout << "incorrect password" << std::endl;
-                    
-                }
-            } else {
-                std::cout << "invalid username or password" << std::endl;
-                //continue;
+				// Kiểm tra password
+				if (user_info && user_info->password == m_password) {
+					std::cout << "login success" << std::endl;
+					currentWindow = userWindow;
+					running = false;
+					continue;
+
+				}
+				else {
+					std::cout << "incorrect password" << std::endl;
+
+				}
+			}
+			else {
+				std::cout << "invalid username or password" << std::endl;
+				//continue;
 				break;
-            }
+			}
 
-            // currentWindow = userWindow;
+			// currentWindow = userWindow;
 			// running = false;
 			// continue;
 		}
@@ -218,35 +238,40 @@ void LoginWindow::Update()
 
 
 UserWindow::UserWindow()
-{
-	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
-	
-	background = TextureManager::Texture("Image/UserTheme.png", renderer);
-
-	logout = new Button(40, 70, 100, 30,  renderer, "Logout");
-	name = new Button(55, 330, 100, 30,  renderer, "Name");
-	age = new Button(55, 440, 100, 30,  renderer, "Age");
-	gender = new Button(350, 330, 100, 30,  renderer, "Gender");
-	country = new Button(350, 440, 100, 30,  renderer, "Country");
-	save = new Button(220, 580, 310, 30,  renderer, "> Update Information <");
-
-	b_name = new TextBox(renderer);
-	b_age = new TextBox(renderer);
-
-	cb_gender = new ComboBox(475,330,250,100,Font,renderer);
-	cb_country = new ComboBox(475,440,250,100,Font,renderer);
-}
+{}
 
 UserWindow::~UserWindow()
 {
 	SDL_DestroyTexture(background);
 	cb_country->~ComboBox();
 	cb_gender->~ComboBox();
+	std::cout << "out" << std::endl;
+}
+
+void UserWindow::Exit()
+{
+	UserWindow::~UserWindow();
 }
 
 void UserWindow::Enter()
 {
 	running = true;
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+
+	background = TextureManager::Texture("Image/UserTheme.png", renderer);
+
+	logout = new Button(40, 70, 100, 30, renderer, "Logout");
+	name = new Button(55, 330, 100, 30, renderer, "Name");
+	age = new Button(55, 440, 100, 30, renderer, "Age");
+	gender = new Button(350, 330, 100, 30, renderer, "Gender");
+	country = new Button(350, 440, 100, 30, renderer, "Country");
+	save = new Button(220, 580, 310, 30, renderer, "> Update Information <");
+
+	b_name = new TextBox(renderer);
+	b_age = new TextBox(renderer);
+
+	cb_gender = new ComboBox(475, 330, 250, 100, Font, renderer);
+	cb_country = new ComboBox(475, 440, 250, 100, Font, renderer);
 	this->b_name->setPosition(130, 330);
 	this->b_age->setPosition(130, 440);
 }
@@ -314,29 +339,207 @@ void UserWindow::Update()
 	SDL_StopTextInput();
 }
 
-FaqWindow::FaqWindow()
+
+
+
+DiscoverWindow::DiscoverWindow()
+{}
+
+DiscoverWindow::~DiscoverWindow()
+{}
+
+void DiscoverWindow::Exit()
+{
+	SDL_DestroyTexture(background);
+	delete show;
+	delete on_where;
+	delete sorted_by;
+	//delete obj;
+	std::cout << "out" << std::endl;
+}
+
+void DiscoverWindow::Enter()
+{
+	running = true;
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+
+	background = TextureManager::Texture("Image/ProjectTheme.png", renderer);
+	return_main = new Button(1162, 40, 100, 30, renderer, "home");
+	show_me = new Button(80, 85, 130, 100, renderer, "SHOW ME");
+	on = new Button(370, 85, 130, 100, renderer, "PROJECT ON");
+	sorted = new Button(695, 85, 130, 100, renderer, "SORTED BY");
+	next = new Button(1000, 180, 100, 50, renderer, "NEXT");
+	previous = new Button(82, 180, 100, 50, renderer, "PREVIOUS");
+	show = new ComboBox(200, 85, 150, 100, Font, renderer);
+	on_where = new ComboBox(530, 85, 150, 100, Font, renderer);
+	sorted_by = new ComboBox(840, 85, 150, 100, Font, renderer);
+	obj = new ProjectManagement;
+}
+
+void DiscoverWindow::Update()
+{
+	obj->loadProjects("films_test.csv");
+	show->addItem("TRENDING");
+	show->addItem("ART");
+	show->addItem("FILM");
+	show->addItem("JUST OUT");
+	on_where->addItem("earth");
+	on_where->addItem("siuuu");
+	on_where->addItem("siuuu");
+	on_where->addItem("yay");
+	while (running)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+			{
+				shutdown();
+				break;
+			}
+			case SDL_MOUSEBUTTONDOWN:
+			{
+				currentProject = obj->getProjectByImage(renderer);
+				break;
+			}
+			}
+			return_main->HandleEvent(&event);
+			show->handleEvent(&event);
+			on_where->handleEvent(&event);
+			sorted_by->handleEvent(&event);
+			obj->HandleEvent(&event);
+		
+		}
+		if (return_main->click)
+		{
+			currentWindow = mainWindow;
+			running = false;
+			continue;
+		}
+		if (obj->isclicked)
+		{
+			std::cout << currentProject->name << std::endl;
+			std::cout << currentProject->description << std::endl;
+			std::cout << currentProject->imagePath << std::endl;
+			std::cout << currentProject->pledged << std::endl;
+
+			currentWindow = projectWindow;
+			running = false;
+			continue;
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, background, NULL, NULL);
+		return_main->draw();
+		show_me->draw();
+		on->draw();
+		sorted->draw();
+		next->draw();
+		previous->draw();
+		show->draw(0,255,255);
+		on_where->draw(0, 255, 255);
+		sorted_by->draw(0, 255, 255);
+		
+		obj->displayProjectsGrid(renderer, 82, 280, 1000, 400);
+		SDL_RenderPresent(renderer);
+		
+	}
+}
+
+
+ProjectWindow::ProjectWindow()
+{}
+
+ProjectWindow::~ProjectWindow()
+{}
+
+void ProjectWindow::Enter()
+{
+	running = true;
+	background = TextureManager::Texture("Image/projecttheme2resize.png", renderer);
+	back = new Button(10, 10, 100, 50, renderer, "BACK");
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	if (currentProject != NULL) {
+		project_img = new IMG_Tex(renderer, currentProject->imagePath.c_str(), 170, 192, 600, 300);
+		box_description = new Text(renderer, Font, (currentProject->description), 830, 192, 400, 300, 380, 380, 20);
+
+		description = new LTexture;
+		description->loadFromRenderedText(currentProject->name, renderer);
+	}
+}
+
+void ProjectWindow::Update()
 {
 	
-	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
-	
-	background = TextureManager::Texture("Image/faq_theme.png", renderer);
-	returnmain = new Button(55, 40, 100, 30,  renderer, "home");
-
+	while (running)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+			{
+				shutdown();
+				break;
+			}
+			}
+			box_description->HandleEvent(&event);
+			back->HandleEvent(&event);
+		}
+		if (back->click)
+		{
+			currentWindow = Discoverwindow;
+			currentProject = NULL;
+			running = false;
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, background, NULL, NULL);
+		project_img->draw(renderer);
+		box_description->draw();
+		description->render(300, 100, renderer);
+		back->draw();
+		SDL_RenderPresent(renderer);
+	}
 }
+
+void ProjectWindow::Exit()
+{
+	SDL_DestroyTexture(background);
+	SDL_DestroyTexture(project_img->getTex());
+	std::cout << "out" << std::endl;
+}
+
+FaqWindow::FaqWindow()
+{}
 
 FaqWindow::~FaqWindow()
 {
 	SDL_DestroyTexture(background);
+	returnmain->~Button();
+	std::cout << "out" << std::endl;
+}
+
+void FaqWindow::Exit()
+{
+	FaqWindow::~FaqWindow();
 }
 
 void FaqWindow::Enter()
 {
 	running = true;
+	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+
+	background = TextureManager::Texture("Image/faq_theme.png", renderer);
+	returnmain = new Button(55, 40, 100, 30, renderer, "home");
 }
 
 void FaqWindow::Update()
 {
-	
+
 	while (running)
 	{
 		SDL_Event event;
@@ -368,7 +571,29 @@ void FaqWindow::Update()
 
 
 RegisterWindow::RegisterWindow()
+{}
+
+RegisterWindow::~RegisterWindow()
 {
+	SDL_DestroyTexture(background);
+	Return_button->~Button();
+	Username->~Button();
+	Password->~Button();
+	Create->~Button();
+	b_password->~TextBox();
+	b_username->~TextBox();
+	std::cout << "out" << std::endl;
+
+}
+
+void RegisterWindow::Exit()
+{
+	RegisterWindow::~RegisterWindow();
+}
+
+void RegisterWindow::Enter()
+{
+	running = true;
 	background = TextureManager::Texture("Image/register_theme.png", renderer);
 	Return_button = new Button(40, 70, 100, 30, renderer, "Home");
 	Username = new Button(372, 382, 100, 30, renderer, "Username");
@@ -377,25 +602,13 @@ RegisterWindow::RegisterWindow()
 	b_password = new TextBox(renderer);
 	b_username = new TextBox(renderer);
 	User* p = new User;
-	
-}
-
-RegisterWindow::~RegisterWindow()
-{
-	SDL_DestroyTexture(background);
-
-}
-
-void RegisterWindow::Enter()
-{
-	running = true;
 	this->b_username->setPosition(490, 382);
 	this->b_password->setPosition(490, 422);
 }
 
 void RegisterWindow::Update()
 {
-	
+
 	SDL_StartTextInput();
 	while (running)
 	{
@@ -428,20 +641,21 @@ void RegisterWindow::Update()
 			std::string m_password = b_password->getText();
 
 
-            std::cout << m_username << ", " << m_password << std::endl;
+			std::cout << m_username << ", " << m_password << std::endl;
 
-            
-            //Thực hiện kiểm tra xem User có tồn tại trong Trie không và kiểm tra password
+
+			//Thực hiện kiểm tra xem User có tồn tại trong Trie không và kiểm tra password
 			p->Load_data();
-            bool user_a_exists = p->search(m_username);
+			bool user_a_exists = p->search(m_username);
 
 
-            if (user_a_exists) {
-                currentWindow = existedWindow;
+			if (user_a_exists) {
+				currentWindow = existedWindow;
 				running = false;
 				continue;
-            } else {
-                info* info_p = new info;
+			}
+			else {
+				info* info_p = new info;
 				info_p->password = m_password;
 				p->Insert(m_username, m_password);
 				p->Load_data();
@@ -450,7 +664,7 @@ void RegisterWindow::Update()
 				currentWindow = donecreateWindow;
 				running = false;
 				continue;
-            }
+			}
 
 		}
 
@@ -470,26 +684,30 @@ void RegisterWindow::Update()
 
 
 ExistedWindow::ExistedWindow()
-{
-	
-	background = TextureManager::Texture("Image/register_existed.png", renderer);
-	ok = new Button(55, 40, 100, 30,  renderer, "home");
-
-}
+{}
 
 ExistedWindow::~ExistedWindow()
 {
 	SDL_DestroyTexture(background);
+	ok->~Button();
+	std::cout << "out" << std::endl;
+}
+
+void ExistedWindow::Exit()
+{
+	ExistedWindow::~ExistedWindow();
 }
 
 void ExistedWindow::Enter()
 {
 	running = true;
+	background = TextureManager::Texture("Image/register_existed.png", renderer);
+	ok = new Button(55, 40, 100, 30, renderer, "home");
 }
 
 void ExistedWindow::Update()
 {
-	
+
 	while (running)
 	{
 		SDL_Event event;
@@ -521,26 +739,30 @@ void ExistedWindow::Update()
 
 
 DoneCreateWindow::DoneCreateWindow()
-{
-	
-	background = TextureManager::Texture("Image/register_done.png", renderer);
-	ok = new Button(55, 40, 100, 30,  renderer, "home");
-
-}
+{}
 
 DoneCreateWindow::~DoneCreateWindow()
 {
 	SDL_DestroyTexture(background);
+	ok->~Button();
+	std::cout << "out" << std::endl;
+}
+
+void DoneCreateWindow::Exit()
+{
+	DoneCreateWindow::~DoneCreateWindow();
 }
 
 void DoneCreateWindow::Enter()
 {
 	running = true;
+	background = TextureManager::Texture("Image/register_done.png", renderer);
+	ok = new Button(55, 40, 100, 30, renderer, "home");
 }
 
 void DoneCreateWindow::Update()
 {
-	
+
 	while (running)
 	{
 		SDL_Event event;
@@ -566,169 +788,6 @@ void DoneCreateWindow::Update()
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, background, NULL, NULL);
 		ok->draw();
-		SDL_RenderPresent(renderer);
-	}
-}
-
-DiscoverWindow::DiscoverWindow()
-{
-	
-	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
-	
-	background = TextureManager::Texture("Image/ProjectTheme.png", renderer);
-	return_main = new Button(1162, 40, 100, 30,  renderer, "home");
-	show_me= new Button(80, 85, 130, 100, renderer, "SHOW ME");
-	on= new Button(370, 85, 130, 100, renderer, "PROJECT ON");
-	sorted= new Button(695, 85, 130, 100, renderer, "SORTED BY");
-	next = new Button(1000, 180, 100, 50, renderer,"NEXT");
-	previous = new Button(82, 180, 100, 50, renderer, "PREVIOUS");
-	show = new ComboBox(200,85,150,100,Font,renderer);
-	on_where= new ComboBox(530, 85, 150, 100, Font, renderer);
-	sorted_by= new ComboBox(840, 85, 150, 100, Font, renderer);
-	obj = new ProjectManagement;
-}
-
-DiscoverWindow::~DiscoverWindow()
-{
-	SDL_DestroyTexture(background);
-	show->~ComboBox();
-	on_where->~ComboBox();
-	sorted_by->~ComboBox();
-	obj->~ProjectManagement();
-	std::cout << "out" << std::endl;
-}
-
-void DiscoverWindow::Enter()
-{
-	running = true;
-
-}
-
-void DiscoverWindow::Update()
-{
-	obj->loadProjects("films_test.csv");
-	show->addItem("TRENDING");
-	show->addItem("ART");
-	show->addItem("FILM");
-	show->addItem("JUST OUT");
-	on_where->addItem("earth");
-	on_where->addItem("siuuu");
-	on_where->addItem("siuuu");
-	on_where->addItem("yay");
-	while (running)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-			{
-				shutdown();
-				break;
-			}
-			case SDL_MOUSEBUTTONDOWN:
-			{
-				currentProject = obj->getProjectByImage(renderer);	
-				break;
-			}
-			}
-			return_main->HandleEvent(&event);
-			show->handleEvent(&event);
-			on_where->handleEvent(&event);
-			sorted_by->handleEvent(&event);
-			obj->HandleEvent(&event);
-		}
-		if (return_main->click)
-		{
-			currentWindow = mainWindow;
-			running = false;
-			continue;
-		}
-		/*if (obj->isclicked)
-		{
-			std::cout << currentProject->name << std::endl;
-			std::cout << currentProject->description << std::endl;
-			std::cout << currentProject->imagePath << std::endl;
-			std::cout << currentProject->pledged << std::endl;
-
-			currentWindow = projectWindow;
-			running = false;
-			continue;
-		}*/
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, background, NULL, NULL);
-		return_main->draw();
-		show_me->draw();
-		on->draw();
-		sorted->draw();
-		next->draw();
-		previous->draw();
-		show->draw(0,255,255);
-		on_where->draw(0, 255, 255);
-		sorted_by->draw(0, 255, 255);
-		
-		obj->displayProjectsGrid(renderer, 82, 280, 1000, 400);
-		SDL_RenderPresent(renderer);
-		
-	}
-}
-ProjectWindow::ProjectWindow()
-{
-	
-	//std::cout << currentProject->description << std::endl;
-
-
-
-	
-
-	background = TextureManager::Texture("Image/projecttheme2resize.png", renderer);
-	//TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
-	//project_img = new IMG_Tex(renderer, temp->imagePath.c_str(), 170, 192, 600, 300);
-	//box_description = new Text(renderer, Font, (temp->description), 830, 192, 400, 300, 380, 380, 20);
-	
-	//description = new LTexture;
-	//description->loadFromRenderedText(temp->name, renderer);
-}
-
-ProjectWindow::~ProjectWindow()
-{
-	
-	SDL_DestroyTexture(background);
-	project_img->~IMG_Tex();
-	box_description->~Text();
-}
-
-void ProjectWindow::Enter()
-{
-	running = true;
-}
-
-void ProjectWindow::Update()
-{
-	
-	while (running)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-			{
-				shutdown();
-				break;
-			}
-			}
-			//box_description->HandleEvent(&event);
-		}
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, background, NULL, NULL);
-		//project_img->draw(renderer);
-		//box_description->draw();
-		//description->render(300, 100, renderer);
 		SDL_RenderPresent(renderer);
 	}
 }
