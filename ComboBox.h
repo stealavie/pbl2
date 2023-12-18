@@ -1,9 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #pragma once
-#include<SDL.h>
-#include<SDL_ttf.h>
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_ttf.h>
 #include<iostream>
 #include<cstring>
-
 
 class ComboBox
 {
@@ -22,6 +22,7 @@ public:
 	~ComboBox();
     void addItem(const char* item);
 	void handleEvent(SDL_Event* e);
-    void draw();
+    void draw(int r, int g,int b);
 };
+
 
