@@ -1,14 +1,14 @@
-#include"Window.h"
+#include"window2.h"
 
 
 SDL_Window* Window::window = SDL_CreateWindow("PBL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
 SDL_Renderer* Window::renderer = SDL_CreateRenderer(window, -1, 0);
-TTF_Font* Window::font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+TTF_Font* Window::font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
 SDL_Color Window::color{ 0,0,0,0 };
 
 Window* Window::mainWindow = new MainWindow;
 Window* Window::loginWindow = new LoginWindow;
-Window* Window::Discoverwindow = new DiscoverWindow;
+Window* Window::discoverWindow = new DiscoverWindow;
 Window* Window::projectWindow = new ProjectWindow;
 Window* Window::userWindow = new UserWindow;
 
@@ -73,7 +73,7 @@ void MainWindow::Update()
 		}
 		else if (Explore_button->click)
 		{
-			currentWindow = Discoverwindow;
+			currentWindow = discoverWindow;
 			running = false;
 			continue;
 		}
@@ -113,10 +113,10 @@ MainWindow::~MainWindow()
 	std::cout << "out" << std::endl;
 }
 
-void MainWindow::Exit()
-{
-	MainWindow::~MainWindow();
-}
+// void MainWindow::Exit()
+// {
+// 	MainWindow::~MainWindow();
+// }
 
 
 LoginWindow::LoginWindow()
@@ -131,10 +131,10 @@ LoginWindow::~LoginWindow()
 	std::cout << "out" << std::endl;
 }
 
-void LoginWindow::Exit()
-{
-	LoginWindow::~LoginWindow();
-}
+// void LoginWindow::Exit()
+// {
+// 	LoginWindow::~LoginWindow();
+// }
 
 void LoginWindow::Enter()
 {
@@ -248,15 +248,15 @@ UserWindow::~UserWindow()
 	std::cout << "out" << std::endl;
 }
 
-void UserWindow::Exit()
-{
-	UserWindow::~UserWindow();
-}
+// void UserWindow::Exit()
+// {
+// 	UserWindow::~UserWindow();
+// }
 
 void UserWindow::Enter()
 {
 	running = true;
-	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
 
 	background = TextureManager::Texture("Image/UserTheme.png", renderer);
 
@@ -348,20 +348,20 @@ DiscoverWindow::DiscoverWindow()
 DiscoverWindow::~DiscoverWindow()
 {}
 
-void DiscoverWindow::Exit()
-{
-	SDL_DestroyTexture(background);
-	delete show;
-	delete on_where;
-	delete sorted_by;
-	//delete obj;
-	std::cout << "out" << std::endl;
-}
+// void DiscoverWindow::Exit()
+// {
+// 	SDL_DestroyTexture(background);
+// 	delete show;
+// 	delete on_where;
+// 	delete sorted_by;
+// 	//delete obj;
+// 	std::cout << "out" << std::endl;
+// }
 
 void DiscoverWindow::Enter()
 {
 	running = true;
-	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
 
 	background = TextureManager::Texture("Image/ProjectTheme.png", renderer);
 	return_main = new Button(1162, 40, 100, 30, renderer, "home");
@@ -460,7 +460,7 @@ void ProjectWindow::Enter()
 	running = true;
 	background = TextureManager::Texture("Image/projecttheme2resize.png", renderer);
 	back = new Button(10, 10, 100, 50, renderer, "BACK");
-	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
 	if (currentProject != NULL) {
 		project_img = new IMG_Tex(renderer, currentProject->imagePath.c_str(), 170, 192, 600, 300);
 		box_description = new Text(renderer, Font, (currentProject->description), 830, 192, 400, 300, 380, 380, 20);
@@ -491,7 +491,7 @@ void ProjectWindow::Update()
 		}
 		if (back->click)
 		{
-			currentWindow = Discoverwindow;
+			currentWindow = discoverWindow;
 			currentProject = NULL;
 			running = false;
 		}
@@ -506,12 +506,12 @@ void ProjectWindow::Update()
 	}
 }
 
-void ProjectWindow::Exit()
-{
-	SDL_DestroyTexture(background);
-	SDL_DestroyTexture(project_img->getTex());
-	std::cout << "out" << std::endl;
-}
+// void ProjectWindow::Exit()
+// {
+// 	SDL_DestroyTexture(background);
+// 	SDL_DestroyTexture(project_img->getTex());
+// 	std::cout << "out" << std::endl;
+// }
 
 FaqWindow::FaqWindow()
 {}
@@ -523,15 +523,15 @@ FaqWindow::~FaqWindow()
 	std::cout << "out" << std::endl;
 }
 
-void FaqWindow::Exit()
-{
-	FaqWindow::~FaqWindow();
-}
+// void FaqWindow::Exit()
+// {
+// 	FaqWindow::~FaqWindow();
+// }
 
 void FaqWindow::Enter()
 {
 	running = true;
-	TTF_Font* Font = TTF_OpenFont("D:/SourceCodePro-Bold.ttf", 24);
+	TTF_Font* Font = TTF_OpenFont("C:/Users/USER/Desktop/pbl2/SourceCodePro-Bold.ttf", 24);
 
 	background = TextureManager::Texture("Image/faq_theme.png", renderer);
 	returnmain = new Button(55, 40, 100, 30, renderer, "home");
@@ -586,10 +586,10 @@ RegisterWindow::~RegisterWindow()
 
 }
 
-void RegisterWindow::Exit()
-{
-	RegisterWindow::~RegisterWindow();
-}
+// void RegisterWindow::Exit()
+// {
+// 	RegisterWindow::~RegisterWindow();
+// }
 
 void RegisterWindow::Enter()
 {
@@ -693,10 +693,10 @@ ExistedWindow::~ExistedWindow()
 	std::cout << "out" << std::endl;
 }
 
-void ExistedWindow::Exit()
-{
-	ExistedWindow::~ExistedWindow();
-}
+// void ExistedWindow::Exit()
+// {
+// 	ExistedWindow::~ExistedWindow();
+// }
 
 void ExistedWindow::Enter()
 {
@@ -748,10 +748,10 @@ DoneCreateWindow::~DoneCreateWindow()
 	std::cout << "out" << std::endl;
 }
 
-void DoneCreateWindow::Exit()
-{
-	DoneCreateWindow::~DoneCreateWindow();
-}
+// void DoneCreateWindow::Exit()
+// {
+// 	DoneCreateWindow::~DoneCreateWindow();
+// }
 
 void DoneCreateWindow::Enter()
 {
