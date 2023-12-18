@@ -9,7 +9,6 @@
 #include"ProjectManagement.h"
 #include"Text_tex.h"
 
-
 class Window 
 {
 public:
@@ -20,7 +19,8 @@ public:
     SDL_Texture* background;
     virtual void Enter() = 0;
     virtual void Update() = 0;
-    virtual void Exit() = 0;
+    static Project* currentProject;
+
     bool running = false;
     void shutdown();
     Window();
@@ -28,9 +28,8 @@ public:
     static Window* mainWindow;
     static Window* loginWindow;
     static Window* currentWindow;
-    static Window* Discoverwindow;
     static Window* projectWindow;
-    static Project* currentProject;
+    static Window* discoverWindow;
     static Window* userWindow;
     static Window* faqWindow;
     static Window* registerWindow;
@@ -41,11 +40,10 @@ public:
 class MainWindow : public Window
 {
 private:
-    Button* Login_button, * Explore_button, * Faq_button, * Register_button;
+    Button* Login_button, * Explore_button, *Faq_button, * Register_button;
 public:
     void Enter();
     void Update();
-    void Exit();
 
     MainWindow();
     virtual ~MainWindow();
@@ -62,7 +60,6 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     LoginWindow();
     virtual ~LoginWindow();
@@ -81,7 +78,6 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     DiscoverWindow();
 
@@ -98,7 +94,6 @@ class ProjectWindow : public Window
 public:
     void Enter();
     void Update();
-    void Exit();
 
     ProjectWindow();
 
@@ -106,17 +101,17 @@ public:
 
 };
 
+
 class  UserWindow : public Window
 {
 private:
     Button* logout, * name, * age, * gender, * country, * save, * projects, * payment;
     std::string u_name, u_age, u_gender, u_country;
     TextBox* b_name, * b_age, * b_gender, * b_country;
-    ComboBox* cb_gender, * cb_country;
+    ComboBox* cb_gender, *cb_country;
 public:
     void Enter();
     void Update();
-    void Exit();
 
     UserWindow();
 
@@ -133,7 +128,6 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     FaqWindow();
 
@@ -151,7 +145,6 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     RegisterWindow();
     virtual ~RegisterWindow();
@@ -167,7 +160,6 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     ExistedWindow();
 
@@ -184,13 +176,11 @@ private:
 public:
     void Enter();
     void Update();
-    void Exit();
 
     DoneCreateWindow();
 
     virtual ~DoneCreateWindow();
 };
-
 
 
 
