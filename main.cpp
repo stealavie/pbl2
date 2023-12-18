@@ -16,6 +16,7 @@ if (TTF_Init() == -1) {
     {
     Window::currentWindow->Enter();
     Window::currentWindow->Update();
+
     
     }
 
