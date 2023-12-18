@@ -1,4 +1,11 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "ComboBox.h"
+// #include <stdio.h>
+// #include <string.h>
+#include <cstring>
+// #include <string>
+
 
 ComboBox::ComboBox(int x, int y, int w, int h, TTF_Font* font, SDL_Renderer* renderer)
     : rect{ x, y, w, h }, font(font), renderer(renderer), numItems(0), selected(-1), offset(0), isOpen(false) 
@@ -24,7 +31,8 @@ void ComboBox::addItem(const char* item)
     if (numItems < 100) 
     {
         items[numItems] = new char[strlen(item) + 1];
-        strcpy_s(items[numItems], strlen(item) + 1, item);
+        // strcpy_s(items[numItems], strlen(item) + 1, item);
+        strcpy(items[numItems], item);
         ++numItems;
     }
 }
@@ -63,9 +71,9 @@ void ComboBox::handleEvent(SDL_Event* e)
 }
 
 
-void ComboBox::draw()
+void ComboBox::draw(int r, int g,int b)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     SDL_Rect renderRect = { rect.x, rect.y, rect.w, isOpen ? rect.h : itemHeight };
     SDL_RenderFillRect(renderer, &renderRect);
 
