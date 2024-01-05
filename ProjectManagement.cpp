@@ -19,9 +19,28 @@ ProjectManagement::~ProjectManagement()
     }
 }
 
-void ProjectManagement::addProject(std::string name, std::string description, std::string imagePath, std::string pledged)
+
+
+void ProjectManagement::loadProjects(std::string filename)
 {
-    Project* newProject = new Project(name, description, imagePath, pledged);
+    std::ifstream file(filename);
+    std::string name, description, imagePath;
+
+    while (std::getline(file, name, ',') &&
+        std::getline(file, description, ',') && std::getline(file, imagePath, '\n'))
+    {
+        addProject(name, description, imagePath);
+        name.clear();
+        description.clear();
+        imagePath.clear();
+    }
+
+    file.close();
+}
+
+void ProjectManagement::addProject(std::string name, std::string description, std::string imagePath)
+{
+    Project* newProject = new Project(name, description, imagePath);
     if (head == nullptr)
     {
         head = newProject;
@@ -35,113 +54,6 @@ void ProjectManagement::addProject(std::string name, std::string description, st
     }
 }
 
-void ProjectManagement::loadProjects(std::string filename)
-{
-    std::ifstream file(filename);
-    std::string name, description, imagePath;
-    std::string pledged;
-
-    while (std::getline(file, name, ',') &&
-        std::getline(file, description, ',') && std::getline(file, imagePath, ',') &&
-        std::getline(file, pledged, '\n'))
-    {
-        addProject(name, description, imagePath, pledged);
-        name.clear();
-        description.clear();
-        imagePath.clear();
-        pledged.clear();
-    }
-
-    file.close();
-}
-
-void ProjectManagement::removeProject(std::string name)
-{
-    Project* temp = head;
-    Project* prev = nullptr;
-
-    while (temp != nullptr && temp->name != name)
-    {
-        prev = temp;
-        temp = temp->next;
-    }
-
-    if (temp == nullptr)
-    {
-        std::cout << "Project not found." << std::endl;
-        return;
-    }
-
-    if (prev == nullptr)
-    {
-        head = temp->next;
-    }
-    else 
-    {
-        prev->next = temp->next;
-    }
-
-    if (temp == tail)
-    {
-        tail = prev;
-    }
-
-    if (temp == currentPage)
-    {
-        currentPage = temp->next;
-    }
-
-    delete temp;
-}
-
-void ProjectManagement::insertProject(std::string name, std::string description, std::string imagePath, std::string pledged, int position) 
-{
-    // Create a new project object
-    Project* newProject = new Project(name, description, imagePath, pledged);
-
-    // Check if the list is empty
-    if (head == nullptr) 
-    {
-        head = newProject;
-        tail = newProject;
-        currentPage = newProject;
-        return;
-    }
-
-    // Insert at the beginning
-    if (position == -1 || position == 0)
-    {
-        newProject->next = head;
-        head = newProject;
-        return;
-    }
-
-    // Insert at the end
-    if (position == -2) 
-    {
-        tail->next = newProject;
-        tail = newProject;
-        return;
-    }
-
-    // Find the position to insert
-    Project* temp = head;
-    for (int i = 1; i < position - 1 && temp != nullptr; i++) 
-    {
-        temp = temp->next;
-    }
-
-    // Check if position is valid
-    if (temp == nullptr) 
-    {
-        std::cout << "Invalid position." << std::endl;
-        return;
-    }
-
-    // Insert at the specified position
-    newProject->next = temp->next;
-    temp->next = newProject;
-}
 
 void ProjectManagement::updateFile(std::string filename) 
 {
@@ -150,7 +62,7 @@ void ProjectManagement::updateFile(std::string filename)
 
     while (temp != nullptr) 
     {
-        file << temp->name << "," << temp->description << "," << temp->imagePath << "," << temp->pledged << "\n";
+        file << temp->name << "," << temp->description << "," << temp->imagePath << "," << "\n";
         temp = temp->next;
     }
 
@@ -178,72 +90,6 @@ void ProjectManagement::previousPage()
     }
 }
 
- Project* ProjectManagement::getMiddle(Project* head) 
- {
-    if (head == nullptr) 
-    {
-        return head;
-    }
-
-    Project* slow = head;
-    Project* fast = head;
-
-    while (fast->next != nullptr && fast->next->next != nullptr)
-    {
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-
-    return slow;
-}
-
-Project* ProjectManagement::mergeLists(Project* a, Project* b) 
- {
-     Project* mergedHead = nullptr;
-
-     if (a == nullptr) 
-     {
-         return b;
-     }
-     else if (b == nullptr) 
-     {
-         return a;
-     }
-
-     if (std::stoi(a->pledged) >= std::stoi(b->pledged)) 
-     {
-         mergedHead = a;
-         mergedHead->next = mergeLists(a->next, b);
-     }
-     else
-     {
-         mergedHead = b;
-         mergedHead->next = mergeLists(a, b->next);
-     }
-
-     return mergedHead;
- }
-
-void ProjectManagement::mergeSort(Project** headRef) 
-{
-    Project* head = *headRef;
-    Project* a;
-    Project* b;
-
-    if ((head == nullptr) || (head->next == nullptr)) 
-    {
-        return;
-    }
-
-    Project* middle = getMiddle(head);
-    b = middle->next;
-    middle->next = nullptr;
-
-    mergeSort(&head);
-    mergeSort(&b);
-
-    *headRef = mergeLists(head, b);
-}
 
 Project* ProjectManagement::getProjectByNumber(int number)
 {
@@ -270,6 +116,8 @@ Project* ProjectManagement::getProjectByNumber(int number)
 
     return temp;
 }
+
+
 
 void ProjectManagement::displayProjectsGrid(SDL_Renderer* renderer, int x, int y, int width, int height) 
 {
@@ -337,7 +185,7 @@ void ProjectManagement::HandleEvent(SDL_Event* e)
 
 Project* ProjectManagement::getProjectByImage(SDL_Renderer* renderer)
 {
-
+    isclicked = false;
     Project* projects[6];
     for (int i = 0; i < 6; i++)
     {
