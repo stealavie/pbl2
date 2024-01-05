@@ -1,11 +1,15 @@
+#pragma once
 #include<iostream>
 #include<fstream>
 #include<vector>
+#include<string>
 using namespace std;
 typedef struct info
 {
     std::string password;
     std::string country;
+    std::string username;
+    std::string project_id;
 }info;
 
 
@@ -15,45 +19,29 @@ private:
     bool isEndOfWord;
     info* Info;
 public:
-    Trie_node(); 
-
+    Trie_node();
     ~Trie_node();
-
     void setEndOfWord(bool);
-
     bool getEndOfWord() const;
-
-    bool hasChild(char) const; 
-
-    void setChild(char , Trie_node*);
-
-    Trie_node* getChild(char) const; 
-
+    bool hasChild(char) const;
+    void setChild(char, Trie_node*);
+    Trie_node* getChild(char) const;
     void setInfo(info*);
-
     info* getInfo();
-
-    friend bool operator == (info*,const string&);
+    friend bool operator == (info*, const string&);
 };
-
 
 
 class Trie : public Trie_node
 {
-    protected:
+protected:
     Trie_node* root;
-    public:
+public:
     Trie();
     ~Trie();
     Trie_node* getRoot();
-    void insert(const std::string&,info*);
     bool search(const std::string&);
-    void Load_data();
-    void update_data();
-    // void Print_trie(Trie_node*,const std::string&);
-    friend std::vector<std::string> get_all_user(Trie_node*,std::string);
     info* getInfo(const string&);
-    void traverseTrie(Trie_node*,vector<pair<string, info*>> &,std::string);
-
-
+    void traverseTrie(Trie_node*, vector<pair<string, info*>>&, std::string);
 };
+
