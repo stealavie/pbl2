@@ -8,12 +8,8 @@ public:
     std::string name;
     std::string description;
     std::string imagePath;
-    std::string pledged;
-    
     Project* next;
 
-    Project(std::string name="", std::string description = "", std::string imagePath = "", std::string pledged = "");
-
-    //Project* operator = (Project* p);
+    Project(std::string name="", std::string description = "", std::string imagePath = "");
 
 };
