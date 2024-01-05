@@ -1,6 +1,6 @@
 #pragma once
 #include"Projects.h"
-
+#include<SDL_ttf.h>
 
 class ProjectManagement {
 private:
@@ -11,32 +11,19 @@ private:
 public:
     bool isclicked = false;
 
-    void insertProject(std::string name, std::string description, std::string imagePath, std::string pledged, int position = -1);
-
-
     ProjectManagement();
 
     ~ProjectManagement();
 
-    void addProject(std::string name, std::string description, std::string imagePath, std::string pledged);
-
     void loadProjects(std::string filename);
+
+    void addProject(std::string name, std::string description, std::string imagePath);
 
     void nextPage();
 
     void previousPage();
 
-    void removeProject(std::string name);
-
-
-
     void updateFile(std::string filename);
-
-    Project* getMiddle(Project* head);
-
-    Project* mergeLists(Project* a, Project* b);
-
-    void mergeSort(Project** headRef);
 
     Project* getProjectByNumber(int number);
 
