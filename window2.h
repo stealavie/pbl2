@@ -9,6 +9,7 @@
 #include"ProjectManagement.h"
 #include"Text_tex.h"
 
+
 class Window 
 {
 public:
@@ -19,8 +20,7 @@ public:
     SDL_Texture* background;
     virtual void Enter() = 0;
     virtual void Update() = 0;
-    static Project* currentProject;
-
+    virtual void Exit() = 0;
     bool running = false;
     void shutdown();
     Window();
@@ -28,8 +28,9 @@ public:
     static Window* mainWindow;
     static Window* loginWindow;
     static Window* currentWindow;
+    static Window* Discoverwindow;
     static Window* projectWindow;
-    static Window* discoverWindow;
+    static Project* currentProject;
     static Window* userWindow;
     static Window* faqWindow;
     static Window* registerWindow;
@@ -40,10 +41,11 @@ public:
 class MainWindow : public Window
 {
 private:
-    Button* Login_button, * Explore_button, *Faq_button, * Register_button;
+    Button* Login_button, * Explore_button, * Faq_button, * Register_button;
 public:
     void Enter();
     void Update();
+    void Exit();
 
     MainWindow();
     virtual ~MainWindow();
@@ -54,12 +56,14 @@ class LoginWindow : public Window
 {
 private:
     Button* Return_button, * Password, * Username, * Login;
-    std::string u_Username, u_Password;
     User* p = new User();
     TextBox* b_username, * b_password;
+protected:
+    std::string u_Username, u_Password;
 public:
     void Enter();
     void Update();
+    void Exit();
 
     LoginWindow();
     virtual ~LoginWindow();
@@ -71,13 +75,14 @@ class  DiscoverWindow : public Window
 private:
     Button* return_main, * show_me, * on,
         * sorted, * next, * previous;
-    ComboBox* show, *on_where,*sorted_by;
+    ComboBox* show;
     ProjectManagement* obj;
 
     
 public:
     void Enter();
     void Update();
+    void Exit();
 
     DiscoverWindow();
 
@@ -94,6 +99,7 @@ class ProjectWindow : public Window
 public:
     void Enter();
     void Update();
+    void Exit();
 
     ProjectWindow();
 
@@ -101,17 +107,18 @@ public:
 
 };
 
-
-class  UserWindow : public Window
+class  UserWindow : public LoginWindow
 {
 private:
     Button* logout, * name, * age, * gender, * country, * save, * projects, * payment;
-    std::string u_name, u_age, u_gender, u_country;
+    std::string u_name, u_gender, u_country;
     TextBox* b_name, * b_age, * b_gender, * b_country;
-    ComboBox* cb_gender, *cb_country;
+    ComboBox* cb_gender, * cb_country;
 public:
+    SDL_Texture* background;
     void Enter();
     void Update();
+    void Exit();
 
     UserWindow();
 
@@ -128,6 +135,7 @@ private:
 public:
     void Enter();
     void Update();
+    void Exit();
 
     FaqWindow();
 
@@ -145,6 +153,7 @@ private:
 public:
     void Enter();
     void Update();
+    void Exit();
 
     RegisterWindow();
     virtual ~RegisterWindow();
@@ -160,6 +169,7 @@ private:
 public:
     void Enter();
     void Update();
+    void Exit();
 
     ExistedWindow();
 
@@ -176,14 +186,12 @@ private:
 public:
     void Enter();
     void Update();
+    void Exit();
 
     DoneCreateWindow();
 
     virtual ~DoneCreateWindow();
 };
-
-
-
 
 
 
